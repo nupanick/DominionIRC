@@ -8,34 +8,38 @@ def listCommands():
 def newGame():
     return DominionGame()
     
-def log(
+def defaultOutput(message, player=None):
+    print player, message
 
 class DominionGame:
     """ An object representing a single game of Dominion. """
     
     def __init__(self):
         """ Set up the game. """
+        self.players = []
+        self.output = defaultOutput
         
         # since this is just a test, assume there's only one player.
-        players = []
-        players.append(Player(0))
-        
+        self.players.append(Player("Player"))
+    
+    def start(self):
         # deal the starting decks.
         for i in range(7):
-            players[0].gain("Copper")
+            self.players[0].gain("Copper")
         for i in range(3):
-            players[0].gain("Estate")
+            self.players[0].gain("Estate")
         for i in range(5):
-            players[0].draw()
-        print("Initial deck = " + str(players[0].deck))
-        print("Initial hand = " + str(players[0].hand))
+            self.players[0].draw()
+        self.output("Initial deck = " + str(self.players[0].deck))
+        self.output("Initial hand = " + str(self.players[0].hand),
+                self.players[0].name)
         
 class Player:
     """ An object representing a player. """
     
-    def __init__(self, playerId):
+    def __init__(self, name):
         """ Create a player object. """
-        self.playerId = playerId
+        self.name = name
         self.deck = []
         self.hand = []
         self.discard = []

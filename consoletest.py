@@ -4,7 +4,15 @@
 import random # for shuffling
 import DominionGame
 
+def customOutput(message, player=None):
+    if player == None:
+        print "PUBLIC: " + message
+    else:
+        print player + ": " + message
+
 game = DominionGame.newGame()
+game.output = customOutput
+game.start()
 
 
 """

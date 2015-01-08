@@ -67,7 +67,7 @@ class DominionGame:
         command = args[0]
         args = args[1:]
         
-        self.output("I don't know how to " + command +
+        self.output("I don't know how to " + command + " " +
                 " ".join(args), playerName)
         
 class Player:

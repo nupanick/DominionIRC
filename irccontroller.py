@@ -190,7 +190,7 @@ if __name__ == '__main__':
     
     # create factory protocol and application
     #f = LogBotFactory(sys.argv[1], sys.argv[2])
-    f = LogBotFactory("#nupa", "log.txt")
+    f = LogBotFactory("#nupa", "log.log")
 
     # connect factory to this host and port
     reactor.connectTCP("irc.esper.net", 6667, f)

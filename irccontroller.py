@@ -61,9 +61,6 @@ class LogBot(irc.IRCClient):
     
     nickname = "twistedbot"
     
-    def __init__(self):
-        self.game = None # the factory handles this one for some reason
-    
     def getDominionOutput(self):
         def dominionOutput(message, player=None):
             if player == None:
@@ -112,6 +109,7 @@ class LogBot(irc.IRCClient):
         # Meta command: restart the game. Mainly for testing purposes.
         if msg.startswith("~restart"):
             self.factory.game = DominionGame.newGame()
+            self.factory.game.output = self.getDominionOutput()
             self.msg(channel, "Game scrapped. Restarting.")
             return
         

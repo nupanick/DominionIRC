@@ -22,56 +22,87 @@ class DominionGame:
     
     def __init__(self):
         """ Set up the game. """
-        self.players = []
-        self.output = defaultOutput
-        self.turn = None
-        self.isRunning = False
+        self.output = defaultOutput     # Output method hook.
+        self.players = {}       # Players, indexed by name.
+        self.turns = []         # Players, sorted by turn order.
+        self.turn = 0           # Increments each turn.
+        self.isRunning = False  # Flag indicating if game is started.
         
         # since this is just a test, assume there's only one player.
-        self.players.append(Player("Player"))
+        #self.players.append(Player("Player"))
     
     def start(self):
         """ Begin the game. """
+        # We're not running yet, right? That would be silly.
+        if self.isRunning:
+            self.output("Error: Game already started.")
+            return
         
         # deal starting decks
-        for i in range(7):
-            self.players[0].gain("Copper")
-        for i in range(3):
-            self.players[0].gain("Estate")
-        for i in range(5):
-            self.players[0].draw()
+        for p in self.turns:
+            for i in range(7):
+                p.gain("Copper")
+            for i in range(3):
+                p.gain("Estate")
+            for i in range(5):
+                p.draw()  # This will automatically
+                                        # shuffle the deck anyway.
         
         # announce hands
-        self.output(str(self.players[0].hand), self.players[0].name)
+        for p in self.turns:
+            self.output(str(p.hand), p.name)
+            
+        # and we're rolling!
+        self.isRunning = True
+        
+    def join(self, playerName):
+        """ Request to join the game. Note that a new player cannot
+            join a game in progress. """
+            
+        if self.isRunning:
+            self.output("Error: You cannot join a game in progress!")
+        elif playerName.lower() in self.players.keys():
+            self.output("Error: You are already in this game!")
+        else:
+            p = Player(playerName)
+            self.players[playerName.lower()] = p
+            self.turns.append(p)
+            self.output(playerName + " joined the game.")
                 
     def parseInput(self, message, playerName, private=False):
         """ Respond to input from the calling program. """
+        
+        # Accept a string-delimited argument list.
+        args = message.split()
+        
+        # Pick out the main command.
+        command = args[0].lower()
+        args = args[1:]
+        
+        # If it's a new player, try to add them and then quit early.
+        if command == "join":
+            self.join(playerName)
+            return
  
-        # Identify the issuing player.
-        # TODO: consider moving the players into a dictionary instead,
-        #       to save a step here.
+        # Otherwise, identify the existing player.
         player = None
-        for p in self.players:
-            if p.name.lower() == playerName.lower():
+        for p in self.players.keys():
+            if p.lower() == playerName.lower():
                 # Found the player object!
-                player = p
+                player = self.players[p]
         if player == None:
-            # Error: Command issued by player not in the game.
             self.output("Error: You are not currently in the game.", 
                     playerName)
             return
  
-        # Accept a string-delimited argument list.
-        args = message.split()
-        
-        # Pick off the main command.
-        command = args[0]
-        args = args[1:]
-        
-        
-        
-        self.output("I don't know how to " + command + " " +
-                " ".join(args), playerName)
+        # We've found the player and they're not new. What are they
+        # trying to do?
+        command = command.lower()
+        if command == "start":
+            self.start()
+        else:
+            # We've tried everything and nothing worked. Just complain.
+            self.output("I don't know how to " + message, playerName)
         
 class Player:
     """ An object representing a player. """

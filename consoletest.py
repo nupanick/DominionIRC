@@ -17,5 +17,6 @@ while True:
     msg = raw_input("> ")
     if msg == "quit":
         break
-    if msg.startswith("!"):
-        game.parseInput(msg[1:], "Player")
+    game.parseInput(msg, "Player")
+    #~ if msg.startswith("!"):
+        #~ game.parseInput(msg[1:], "Player")

@@ -25,6 +25,7 @@ class DominionGame:
         self.players = []
         self.output = defaultOutput
         self.turn = None
+        self.isRunning = False
         
         # since this is just a test, assume there's only one player.
         self.players.append(Player("Player"))
@@ -66,6 +67,8 @@ class DominionGame:
         # Pick off the main command.
         command = args[0]
         args = args[1:]
+        
+        
         
         self.output("I don't know how to " + command + " " +
                 " ".join(args), playerName)
